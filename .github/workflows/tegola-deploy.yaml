@@ -1,4 +1,4 @@
-name: dev-deploy-tegola-lambda
+name: tegola-deploy-tegola-lambda
 on:
   push:
     branches:
@@ -34,7 +34,7 @@ jobs:
     - name: Check API response
       uses: actions/checkout@v2
       with:
-        ref: dev
+        ref: tegola
       id: checkout
     - name: Install dependencies
       run: |

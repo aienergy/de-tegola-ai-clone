@@ -1,4 +1,4 @@
-service: de-tegola-${git:branch}
+service: de-tegola-ai-clone
 provider:
   name: aws
   runtime: go1.x
@@ -16,8 +16,8 @@ package:
     - package-lock.json
     - node_modules/**
 functions:
-  de-tegola:
-    name: de-tegola-${git:branch}
+  de-tegola-ai-clone:
+    name: de-tegola-ai-clone
     handler: tegola_lambda
     environment:
       AWS_REGION_1: ${self:custom.secrets.AWS_REGION_1}

@@ -5,7 +5,7 @@ provider:
   region: eu-west-2
   endpointType: regional
 custom:
-  secrets: ${file(secrets.dev.yaml)}
+  secrets: ${file(secrets.dev.yml)}
   pythonRequirements:
     dockerizePip: true
 package:

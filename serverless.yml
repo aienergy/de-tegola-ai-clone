@@ -4,8 +4,9 @@ provider:
   runtime: go1.x
   region: eu-west-2
   endpointType: regional
+  stage: dev
 custom:
-  secrets: ${file(secrets.dev.yml)}
+  secrets: ${file(secrets.${opt:stage, self:provider.stage}.yml)}
   pythonRequirements:
     dockerizePip: true
 package:

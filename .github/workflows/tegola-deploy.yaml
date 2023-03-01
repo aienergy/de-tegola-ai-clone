@@ -48,7 +48,7 @@ jobs:
         aws-region: eu-west-2
     - name: Check API response
       run: |
-        response=$(curl --write-out %{http_code} --silent --output /dev/null https://nfn5hwu02j.execute-api.eu-west-2.amazonaws.com/dev/capabilities)
+        response=$(curl --write-out %{http_code} --silent --output /dev/null https://6iyrjue6ml.execute-api.eu-west-2.amazonaws.com/dev/capabilities)
         commit_message=$(git log -1 --pretty=%B $GITHUB_SHA)
         if [ $response -eq 200 ]; then
           message="API response: OK (HTTP $response) for Commit Message: $commit_message [leo-dev]"

@@ -3,9 +3,9 @@ provider:
   name: aws
   runtime: go1.x
   region: eu-west-2
-  endpointType: Regional
+  endpointType: regional
 custom:
-  secrets: ${file(secrets.tegola.yml)}
+  secrets: ${file(secrets.dev.yml)}
   pythonRequirements:
     dockerizePip: true
 package:

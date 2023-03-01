@@ -6,7 +6,7 @@
     "serverless-aws-latest-layer-version": "^0.2.6"
   },
   "scripts": {
-    "tegola-deploy": "serverless deploy --stage dev",
+    "tegola-deploy": "serverless deploy",
     "prod-deploy": "serverless deploy --stage prod"
   },
   "devDependencies": {

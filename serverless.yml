@@ -1,0 +1,37 @@
+service: de-tegola-${git:branch}
+provider:
+  name: aws
+  runtime: go1.x
+  region: eu-west-2
+  stage: dev
+  endpointType: Regional
+custom:
+  secrets: ${file(secrets.${opt:stage, self:provider.stage}.yml)}
+  pythonRequirements:
+    dockerizePip: true
+package:
+  individually: false
+  exclude:
+    - package.json
+    - package-lock.json
+    - node_modules/**
+functions:
+  de-tegola:
+    name: de-tegola-${git:branch}
+    handler: tegola_lambda
+    environment:
+      AWS_REGION_1: ${self:custom.secrets.AWS_REGION_1}
+      AWS_ACCESS_KEY_ID_1: ${self:custom.secrets.AWS_ACCESS_KEY_ID_1}
+      AWS_SECRET_ACCESS_KEY_1: ${self:custom.secrets.AWS_SECRET_ACCESS_KEY_1}
+      AWS_CACHE_BUCKET: ${self:custom.secrets.AWS_CACHE_BUCKET}
+      DATABASE_HOST_URI: ${self:custom.secrets.DATABASE_HOST_URI}
+      DATABASE_NAME: ${self:custom.secrets.DATABASE_NAME}
+      DATABASE_PASSWORD: ${self:custom.secrets.DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${self:custom.secrets.DATABASE_USERNAME}
+    events:
+      - http:
+          path: /{proxy+}
+          method: any
+plugins:
+  - serverless-plugin-git-variables
+  - serverless-secrets-plugin

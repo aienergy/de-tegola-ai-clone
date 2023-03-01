@@ -1,0 +1,61 @@
+name: dev-deploy-tegola-lambda
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: npm install
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+        env:
+          ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID_TEGOLA }}
+          SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY_TEGOLA }}
+      - name: Serverless Deploy
+        run: npm run-script dev-deploy
+  
+  check-api-response:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check API response
+      uses: actions/checkout@v2
+      with:
+        ref: dev
+      id: checkout
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2
+    - name: Check API response
+      run: |
+        response=$(curl --write-out %{http_code} --silent --output /dev/null https://nfn5hwu02j.execute-api.eu-west-2.amazonaws.com/dev/capabilities)
+        commit_message=$(git log -1 --pretty=%B $GITHUB_SHA)
+        if [ $response -eq 200 ]; then
+          message="API response: OK (HTTP $response) for Commit Message: $commit_message [leo-dev]"
+        else
+          message="API response: ERROR (HTTP $response) tegola going crazy!!"
+        fi
+        aws sns publish --topic-arn arn:aws:sns:eu-west-2:549882643289:tegola-api-response --message "$message"     

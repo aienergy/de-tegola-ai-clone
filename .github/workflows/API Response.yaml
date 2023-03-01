@@ -1,0 +1,37 @@
+name: Check API Response
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  check-api-response:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check API response
+      uses: actions/checkout@v2
+      with:
+        ref: dev
+      id: checkout
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2
+    - name: Check API response
+      run: |
+        response=$(curl --write-out %{http_code} --silent --output /dev/null https://<value>.execute-api.eu-west-2.amazonaws.com/dev/capabilities)
+        commit_message=$(git log -1 --pretty=%B $GITHUB_SHA)
+        if [ $response -eq 200 ]; then
+          message="API response: OK (HTTP $response) for Commit Message: $commit_message"
+        else
+          message="API response: ERROR (HTTP $response) for Commit Message: $commit_message"
+        fi
+        aws sns publish --topic-arn <value> --message "$message"

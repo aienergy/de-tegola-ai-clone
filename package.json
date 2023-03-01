@@ -1,0 +1,18 @@
+{
+  "name": "de-tegola-leo",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {
+    "serverless-aws-latest-layer-version": "^0.2.6"
+  },
+  "scripts": {
+    "dev-deploy": "serverless deploy --stage dev",
+    "prod-deploy": "serverless deploy --stage prod"
+  },
+  "devDependencies": {
+    "serverless": "^1.67.0",
+    "serverless-python-requirements": "^5.1.0",
+    "serverless-plugin-git-variables": "^5.1.0",
+    "serverless-secrets-plugin": "^0.0.1"
+  }
+}

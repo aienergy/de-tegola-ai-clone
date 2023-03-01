@@ -6,7 +6,7 @@ provider:
   stage: dev
   endpointType: Regional
 custom:
-  secrets: ${file(secrets.${opt:stage, self:provider.stage}.yml)}
+  secrets: ${file(secrets.tegola.yml)}
   pythonRequirements:
     dockerizePip: true
 package:

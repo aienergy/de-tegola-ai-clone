@@ -2,7 +2,7 @@ name: dev-deploy-tegola-lambda
 on:
   push:
     branches:
-      - dev
+      - tegola
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
           ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID_TEGOLA }}
           SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY_TEGOLA }}
       - name: Serverless Deploy
-        run: npm run-script dev-deploy
+        run: npm run-script tegola-deploy
   
   check-api-response:
     needs: deploy
@@ -57,5 +57,4 @@ jobs:
           message="API response: OK (HTTP $response) for Commit Message: $commit_message [leo-dev]"
         else
           message="API response: ERROR (HTTP $response) tegola going crazy!!"
-        fi
-        aws sns publish --topic-arn arn:aws:sns:eu-west-2:549882643289:tegola-api-response --message "$message"     
+        print(message)
